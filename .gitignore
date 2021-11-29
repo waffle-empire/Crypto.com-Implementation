@@ -1,0 +1,20 @@
+# ide's
+.vs/
+.vscode/
+
+# build dirs
+bin/
+build/
+
+# vs2019
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# cmake
+CMakeLists.txt
+*.cmake
+
+# gmake2
+Makefile
