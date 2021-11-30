@@ -2,7 +2,7 @@
 
 namespace exchange
 {
-    class Client;
+    class Client; // forward declaration to client.hpp
     class MessageHandler
     {
     private:

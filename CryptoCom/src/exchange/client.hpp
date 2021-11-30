@@ -3,7 +3,7 @@
 
 namespace exchange
 {
-    class MessageHandler;
+    class MessageHandler; // forward declaration to message_handler.hpp
     class Client
     {
         friend class MessageHandler;
