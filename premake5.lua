@@ -12,12 +12,13 @@ workspace "CryptoCom"
 
   IncludeDir = {}
 	IncludeDir["boost"] = "/usr/include/boost"
+	IncludeDir["cryptlite"] = "vendor/cpp-cryptlite/include"
   IncludeDir["json"] = "vendor/json/single_include"
 	IncludeDir["websocketpp"] = "/usr/include/websocketpp"
-  
+
   CppVersion = "C++17"
 
-   
+
   function DeclareDebugOptions()
     filter "configurations:Debug"
       defines { "_DEBUG" }
@@ -36,7 +37,7 @@ workspace "CryptoCom"
 
     PrecompiledHeaderInclude = "common.hpp"
     PrecompiledHeaderSource = "common.cpp"
- 
+
     files
     {
       "%{prj.name}/src/**.hpp",
@@ -48,6 +49,7 @@ workspace "CryptoCom"
     includedirs
     {
 			"%{IncludeDir.boost}",
+			"%{IncludeDir.cryptlite}",
       "%{IncludeDir.json}",
 			"%{IncludeDir.websocketpp}",
       "%{prj.name}/src"
