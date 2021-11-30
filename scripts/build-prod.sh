@@ -1,3 +1,3 @@
 #!/bin/bash
 
-premake5 gmake2 && make
+premake5 gmake2 && make config=release
