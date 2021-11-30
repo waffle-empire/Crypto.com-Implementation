@@ -1,5 +1,6 @@
 #include "client.hpp"
 #include "message_handler.hpp"
+#include "requests/public/auth.hpp"
 #include "util.hpp"
 
 namespace exchange
@@ -20,24 +21,12 @@ namespace exchange
 
     bool Client::authenticate(std::string key, std::string secret)
     {
-        nlohmann::json json{
-            { "id", 11 },
-            { "method", "public/auth" },
-            { "api_key", key },
-            { "nonce", time(nullptr) * 1000 }
-        };
+        auto auth = AuthRequest(key);
+        auto json = auth.to_json();
 
         util::sign(json, key, secret);
 
-        websocketpp::lib::error_code ec;
-        this->m_client->send(this->m_conn->get_handle(), json.dump(), websocketpp::frame::opcode::text, ec);
-        if (ec)
-        {
-            g_log->error("CLIENT", "Authentication error:\n%s", ec.message().c_str());
-
-            return false;
-        }
-        return true;
+        return this->send(json);
     }
 
     void Client::connect()
