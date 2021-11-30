@@ -1,16 +1,21 @@
 #include "client.hpp"
 #include "message_handler.hpp"
 #include "requests/public/auth.hpp"
+#include "spot.hpp"
+#include "thread_pool.hpp"
 #include "util.hpp"
 
 namespace exchange
 {
 // public
-    Client::Client(std::string endpoint)
+    Client::Client(std::string key, std::string secret)
     {
-        if (!endpoint.empty()) this->m_endpoint = endpoint;
+        this->key = key;
+        this->secret = secret;
 
-        m_message_handler = new MessageHandler(this);
+        this->spot = new SpotTrading(this);
+
+        this->m_message_handler = new MessageHandler(this);
     }
 
     Client::~Client()
@@ -19,17 +24,17 @@ namespace exchange
         delete this->m_message_handler;
     }
 
-    bool Client::authenticate(std::string key, std::string secret)
+    bool Client::authenticate()
     {
-        auto auth = AuthRequest(key);
+        auto auth = AuthRequest(this->key);
         auto json = auth.to_json();
 
-        util::sign(json, key, secret);
+        util::sign(json, this->key, this->secret);
 
         return this->send(json);
     }
 
-    void Client::connect()
+    bool Client::connect()
     {
         try
         {
@@ -45,19 +50,29 @@ namespace exchange
             this->m_conn = this->m_client->get_connection(this->m_endpoint, ec);
             if (ec)
             {
-                this->m_error = true;
-
                 g_log->error("CLIENT", "Failed to get connection:\n%s", ec.message().c_str());
+
+                return false;
             }
 
             this->m_client->connect(this->m_conn);
+
+            g_thread_pool->push([&]
+            {
+                std::this_thread::sleep_for(2s);
+
+                this->authenticate();
+            });
 
             this->m_client->run();
         }
         catch(const std::exception& e)
         {
             g_log->error("CLIENT", "Failed to initialze client:\n%s", e.what());
+
+            return false;
         }
+        return true;
     }
 
     void Client::kill()
@@ -74,7 +89,7 @@ namespace exchange
 
         if (ec)
         {
-            g_log->verbose("CLIENT", "Failed to send message:\n%s", ec.message());
+            g_log->error("CLIENT", "Failed to send message:\n%s", ec.message().c_str());
 
             return false;
         }

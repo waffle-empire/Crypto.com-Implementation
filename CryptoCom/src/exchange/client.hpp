@@ -4,6 +4,7 @@
 namespace exchange
 {
     class MessageHandler; // forward declaration to message_handler.hpp
+    class SpotTrading;
     class Client
     {
         friend class MessageHandler;
@@ -14,16 +15,16 @@ namespace exchange
         MessageHandler *m_message_handler;
 
         std::string m_endpoint = "wss://stream.crypto.com/v2/user";
-
-        bool m_error = false;
+        std::string key;
+        std::string secret;
 
     public:
-        Client(std::string endpoint = "");
+        SpotTrading *spot;
+
+        Client(std::string key, std::string secret);
         ~Client();
 
-        bool authenticate(std::string key, std::string secret);
-
-        void connect();
+        bool connect();
 
         void kill();
 
@@ -32,6 +33,8 @@ namespace exchange
         bool send(const char *message);
 
     private:
+        bool authenticate();
+
         void on_message(websocketpp::connection_hdl con_hdl, message_ptr message);
 
         context_ptr on_tls_init();

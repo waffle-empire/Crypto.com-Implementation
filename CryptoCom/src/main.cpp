@@ -22,15 +22,11 @@ int main()
     auto thread_pool_instance = std::make_unique<thread_pool>();
 
     g_log->verbose("MAIN", "Creating Exchange Client instance");
-    auto client_instance = std::make_unique<exchange::Client>();
+    auto client_instance = std::make_unique<exchange::Client>(settings_instance->api.key, settings_instance->api.secret);
     g_thread_pool->push([&]
     {
         client_instance->connect();
     });
-
-    std::this_thread::sleep_for(5s);
-
-    client_instance->authenticate(settings_instance->api.key, settings_instance->api.secret);
 
     while (g_running)
     {
