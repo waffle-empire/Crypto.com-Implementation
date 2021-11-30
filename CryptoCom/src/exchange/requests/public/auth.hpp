@@ -6,12 +6,14 @@ private:
     const std::string method = "public/auth";
 
     std::string api_key;
+    long int nonce;
 
 public:
     AuthRequest(std::string api_key)
         : BaseRequest()
     {
         this->api_key = api_key;
+        this->nonce = time(nullptr) * 1000;
     }
 
     nlohmann::json to_json()
@@ -19,7 +21,7 @@ public:
         auto json = nlohmann::json{
             { "api_key", this->api_key },
             { "method", this->method },
-            { "nonce", time(nullptr) * 1000 },
+            { "nonce", this->nonce },
         };
         BaseRequest::to_json(json);
 
