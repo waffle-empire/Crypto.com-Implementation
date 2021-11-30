@@ -22,7 +22,7 @@ int main()
         client_instance->connect();
     });
 
-    std::this_thread::sleep_for(1s);
+    std::this_thread::sleep_for(2s);
 
     client_instance->authenticate("hpAMS5QYAf24NcVAUir8PF", "gLfT5igm8jKSJkkVCMC9Fr");
 
