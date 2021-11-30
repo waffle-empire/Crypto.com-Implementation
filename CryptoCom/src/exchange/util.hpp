@@ -18,8 +18,10 @@ namespace util
         cryptlite::hmac<cryptlite::sha256>::calc(payload, secret, digest);
 
         std::stringstream sstream;
+        sstream.fill('0');
+
         for (uint8_t i = 0u; i < cryptlite::sha256::HASH_SIZE; i++)
-            sstream << std::hex << (int)digest[i];
+            sstream << std::hex << std::setw(2) << (int)digest[i];
 
         json["sig"] = sstream.str();
     }
