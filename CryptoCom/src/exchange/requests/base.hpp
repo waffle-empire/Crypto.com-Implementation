@@ -1,6 +1,9 @@
 #include "nlohmann/json.hpp"
 
-static int counter;
+#ifndef BASE_REQUEST
+#define BASE_REQUEST
+
+inline int counter;
 class BaseRequest
 {
 private:
@@ -16,3 +19,5 @@ public:
         json["id"] = this->id;
     }
 };
+
+#endif
