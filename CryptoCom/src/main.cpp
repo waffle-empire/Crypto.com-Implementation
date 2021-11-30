@@ -1,5 +1,6 @@
 #include "common.hpp"
 #include "exchange/client.hpp"
+#include "settings.hpp"
 #include "thread_pool.hpp"
 
 bool g_running = true;
@@ -11,32 +12,42 @@ int main()
     std::signal(SIGUSR1, signal_handler);
     std::signal(SIGUSR2, signal_handler);
 
-    g_log->info("MAIN", "Startup > ");
+    g_log->info("MAIN", "Startup");
 
-    g_log->verbose("MAIN", "Creating thread pool");
+    g_log->verbose("MAIN", "Creating settings instance");
+    auto settings_instance = std::make_unique<settings>();
+
+    g_log->verbose("MAIN", "Creating thread pool instance");
     auto thread_pool_instance = std::make_unique<thread_pool>();
 
+    g_log->verbose("MAIN", "Creating Exchange Client instance");
     auto client_instance = std::make_unique<exchange::Client>();
     g_thread_pool->push([&]
     {
         client_instance->connect();
     });
 
-    std::this_thread::sleep_for(2s);
+    std::this_thread::sleep_for(100ms);
 
-    client_instance->authenticate("hpAMS5QYAf24NcVAUir8PF", "gLfT5igm8jKSJkkVCMC9Fr");
+    client_instance->authenticate("JuenLaS98xzgjePKNdtJzQ", "zREwp8quUZUPsK6iS4htiG");
 
     while (g_running)
     {
         std::this_thread::sleep_for(100ms);
     }
 
+    g_log->verbose("MAIN", "Killing client before destroying thread pool.");
     client_instance->kill();
 
+    g_log->verbose("MAIN", "Destroying thread pool.");
     thread_pool_instance->destroy();
-    thread_pool_instance.reset();
 
+    g_log->verbose("MAIN", "Releasing client instance.");
     client_instance.reset();
+    g_log->verbose("MAIN", "Releasing thread pool instance.");
+    thread_pool_instance.reset();
+    g_log->verbose("MAIN", "Releasing settings instance.");
+    settings_instance.reset();
 
     return 0;
 }
