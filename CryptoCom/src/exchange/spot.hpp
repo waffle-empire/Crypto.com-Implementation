@@ -15,9 +15,9 @@ namespace exchange
             double trigger_price = 0, std::string client_oid = "",
             std::string time_in_force = "", std::string exec_inst = "");
         void get_account_summary(std::string currency = "");
-        void get_open_orders(std::string instrument_name, int page_size, int page);
+        void get_open_orders(std::string instrument_name = "", int page_size = 0, int page = 0);
         void get_order_detail(std::string order_id);
-        void get_order_history(std::string instrument_name, long start_ts, long end_ts, int page_size, int page);
-        void get_trades(std::string instrument_name, long start_ts, long end_ts, int page_size, int page);
+        void get_order_history(std::string instrument_name = "", long start_ts = 0, long end_ts = 0, int page_size = 0, int page = 0);
+        void get_trades(std::string instrument_name = "", long start_ts = 0, long end_ts = 0, int page_size = 0, int page = 0);
     };
 }
