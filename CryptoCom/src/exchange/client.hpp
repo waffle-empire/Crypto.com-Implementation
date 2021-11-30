@@ -26,8 +26,6 @@ namespace exchange
             sstream << std::hex << (int)digest[i];
 
         json["sig"] = sstream.str();
-
-        std::cout << json.dump(4).c_str() << std::endl;
     }
 
     typedef websocketpp::client<websocketpp::config::asio_tls_client> client;
