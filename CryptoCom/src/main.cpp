@@ -16,6 +16,7 @@ int main()
 
     g_log->verbose("MAIN", "Creating settings instance");
     auto settings_instance = std::make_unique<settings>();
+    settings_instance->load();
 
     g_log->verbose("MAIN", "Creating thread pool instance");
     auto thread_pool_instance = std::make_unique<thread_pool>();
@@ -27,9 +28,9 @@ int main()
         client_instance->connect();
     });
 
-    std::this_thread::sleep_for(100ms);
+    std::this_thread::sleep_for(5s);
 
-    client_instance->authenticate("JuenLaS98xzgjePKNdtJzQ", "zREwp8quUZUPsK6iS4htiG");
+    client_instance->authenticate(settings_instance->api.key, settings_instance->api.secret);
 
     while (g_running)
     {
