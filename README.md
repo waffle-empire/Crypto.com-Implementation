@@ -9,13 +9,7 @@ git clone https://github.com/Yimura/Crypto.com-Implementation.git --recursive Cr
 cd CryptoCom
 ```
 
-### Visual Studio 2019 or higher
-
-```bash
-premake5 vs2019
-```
-
-### Other environments
+### building
 
 ```bash
 premake5 gmake2
