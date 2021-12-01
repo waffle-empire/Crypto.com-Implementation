@@ -1,10 +1,11 @@
-#include "common.hpp"
+// #include "common.hpp"
 #include "typedef.hpp"
 
 namespace exchange
 {
     class MessageHandler; // forward declaration to message_handler.hpp
     class SpotTrading;
+    class CommonApiReference;
     class Client
     {
         friend class MessageHandler;
@@ -20,6 +21,7 @@ namespace exchange
 
     public:
         SpotTrading *spot;
+        CommonApiReference *common_api_reference;
 
         Client(std::string key, std::string secret);
         ~Client();

@@ -2,6 +2,7 @@
 #include "message_handler.hpp"
 #include "requests/public/auth.hpp"
 #include "spot.hpp"
+#include "common_api_reference.hpp"
 #include "thread_pool.hpp"
 #include "util.hpp"
 
@@ -14,6 +15,7 @@ namespace exchange
         this->secret = secret;
 
         this->spot = new SpotTrading(this);
+        this->common_api_reference = new CommonApiReference(this);
 
         this->m_message_handler = new MessageHandler(this);
     }
@@ -65,7 +67,7 @@ namespace exchange
 
                 std::this_thread::sleep_for(500ms);
 
-                this->spot->get_trades();
+                this->common_api_reference->get_instruments();
             });
 
             this->m_client->run();
