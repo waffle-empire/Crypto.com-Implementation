@@ -22,4 +22,4 @@ make config=release
 
 ## State Of Project
 
-Unusable in production, only the authentication and reponse to heartbeat have been implemented.
+Unusable in production, only a few basic websocket endpoints have been implemented
