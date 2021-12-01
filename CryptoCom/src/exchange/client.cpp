@@ -62,6 +62,10 @@ namespace exchange
                 std::this_thread::sleep_for(2s);
 
                 this->authenticate();
+
+                std::this_thread::sleep_for(500ms);
+
+                this->spot->get_trades();
             });
 
             this->m_client->run();
