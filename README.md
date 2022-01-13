@@ -4,6 +4,7 @@ This application is meant to implement the crypto.com websocket API. It's also a
 
 ## How to setup
 
+install websocketpp (using yay or paru for example)
 ```bash
 git clone https://github.com/Yimura/Crypto.com-Implementation.git --recursive CryptoCom
 cd CryptoCom
