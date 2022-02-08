@@ -1,0 +1,24 @@
+# ide's
+.vs/
+.vscode/*
+!.vscode/c_cpp_properties.json
+
+# build dirs
+bin/
+build/
+
+# vs2019
+*.sln
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+
+# cmake
+CMakeLists.txt
+*.cmake
+
+# gmake2
+Makefile
+
+# settings file with authentication details
+*.json

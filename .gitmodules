@@ -1,0 +1,9 @@
+[submodule "vendor/cpp-cryptlite"]
+	path = vendor/cpp-cryptlite
+	url = https://github.com/lyokato/cpp-cryptlite.git
+[submodule "vendor/json"]
+	path = vendor/json
+	url = https://github.com/nlohmann/json.git
+[submodule "vendor/HTTPRequest"]
+	path = vendor/HTTPRequest
+	url = https://github.com/elnormous/HTTPRequest.git
