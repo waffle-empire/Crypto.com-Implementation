@@ -20,19 +20,19 @@ namespace crypto_com
         /* PUBLIC */ 
         void authenticate_handler();
         // void get_instruments();
-        // void get_book(std::string instrument_name = "", std::string depth = "");
+        // void get_book(std::string instrument_name, std::string depth = "");
         // void get_candlestick(std::string instrument_name = "", std::string timeframe = "");
-        // void get_ticker(std::string instrument_name); 
-        // void get_trades();  // conflicting name with private/get-trades
+        // void get_ticker(std::string instrument_name = ""); 
+        // void get_trades(std::string instrument_name = "");  // conflicting name with private/get-trades
 
         /* PRIVATE */
-        // void set_cancel_on_disconnect(std::string scope = "");
+        // void set_cancel_on_disconnect(std::string scope);
         // void get_cancel_on_disconnect();
-        // void create_withdrawal(std::string client_wid, std::string currency = "", double amount = 0, 
-        //         std::string address = "", std::string address_tag = "", std::string network_id = "");
+        // void create_withdrawal(std::string currency, double amount, std::string address, 
+                // std::string client_wid = "", std::string address_tag = "", std::string network_id = "");
         // void get_currency_networks(); // still need to pass empty params object in json
-        // void get_withdrawal_history(std::string currency, double start_ts, double end_ts, int page_size, int page, std::string status);
-        // void get_deposit_history(std::string currency, double start_ts, double end_ts, int page_size, int page, std::string status);
+        // void get_withdrawal_history(std::string currency = "", double start_ts = 0, double end_ts = 0, int page_size = 0, int page = 0, std::string status = "");
+        // void get_deposit_history(std::string currency = "", double start_ts = 0, double end_ts = 0, int page_size = 0, int page = 0, std::string status = "");
         // void get_deposit_address(std::string currency);
         
 
