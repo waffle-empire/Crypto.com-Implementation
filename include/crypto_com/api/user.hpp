@@ -16,13 +16,16 @@ namespace crypto_com
         UserAPI(std::string key, std::string secret, bool is_sandbox);
         virtual ~UserAPI();
 
-        // COMMON API REFERENCE - https://exchange-docs.crypto.com/spot/index.html#common-api-reference
+        /* COMMON API REFERENCE - https://exchange-docs.crypto.com/spot/index.html#common-api-reference */
+        /* PUBLIC */ 
         void authenticate_handler();
         // void get_instruments();
         // void get_book(std::string instrument_name = "", std::string depth = "");
         // void get_candlestick(std::string instrument_name = "", std::string timeframe = "");
         // void get_ticker(std::string instrument_name); 
-        // void get_trades();  conflicting name with private/get-trades
+        // void get_trades();  // conflicting name with private/get-trades
+
+        /* PRIVATE */
         // void set_cancel_on_disconnect(std::string scope = "");
         // void get_cancel_on_disconnect();
         // void create_withdrawal(std::string client_wid, std::string currency = "", double amount = 0, 
@@ -49,6 +52,9 @@ namespace crypto_com
                 int page_size = 0, int page = 0);
         
         // MARGIN TRADING API - https://exchange-docs.crypto.com/spot/index.html#margin-trading-api
+        /* PUBLIC */
+        
+        /* PRIVATE */
 
         // DERIVATIVES TRANSFER API - https://exchange-docs.crypto.com/spot/index.html#derivatives-transfer-api
 
