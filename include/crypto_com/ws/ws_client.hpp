@@ -99,9 +99,7 @@ namespace crypto_com
                 std::cout << "FAILED TO AUTHENTICATE" << std::endl;
 
                 return;
-            }
-
-            if (pl["method"] == "public/heartbeat")
+            } else if (pl["method"] == "public/heartbeat")
             {
                 this->send_heartbeat(pl);
 
@@ -109,6 +107,8 @@ namespace crypto_com
                     m_authenticate_handler();
 
                 return;
+            } else {
+                std::cout << pl << std::endl;
             }
         }
 
@@ -121,6 +121,8 @@ namespace crypto_com
                 this->send_heartbeat(pl);
 
                 return;
+            } else {
+                std::cout << pl << std::endl;
             }
         }
 

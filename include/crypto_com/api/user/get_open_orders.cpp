@@ -3,7 +3,7 @@
 
 namespace crypto_com
 {
-    void UserAPI::get_open_orders(std::string instrument_name = "", int page_size = 0, int page = 0)
+    void UserAPI::get_open_orders(std::string instrument_name, int page_size, int page)
     {
         nlohmann::json pl = nlohmann::json{
             { "method", "private/get-open-orders" },

@@ -3,8 +3,8 @@
 
 namespace crypto_com
 {
-    void UserAPI::get_trades(std::string instrument_name = "", long start_ts = 0, long end_ts = 0,
-                int page_size = 0, int page = 0)
+    void UserAPI::get_trades(std::string instrument_name, long start_ts, long end_ts,
+                int page_size, int page)
     {
         nlohmann::json pl = nlohmann::json{
             { "method", "private/get-trades" },

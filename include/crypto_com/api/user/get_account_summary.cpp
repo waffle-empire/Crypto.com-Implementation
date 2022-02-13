@@ -3,7 +3,7 @@
 
 namespace crypto_com
 {
-    void UserAPI::get_account_summary(std::string currency = "")
+    void UserAPI::get_account_summary(std::string currency)
     {
         nlohmann::json pl = nlohmann::json{
             { "method", "private/get-account-summary" },
