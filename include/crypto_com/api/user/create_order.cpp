@@ -19,8 +19,6 @@ namespace crypto_com
             }
         };
 
-        pl["params"] = nlohmann::json::object();
-
         if (price)
             pl["params"]["price"] = price;
         if (quantity)
