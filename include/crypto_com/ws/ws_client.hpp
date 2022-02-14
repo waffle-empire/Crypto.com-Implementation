@@ -32,6 +32,14 @@ namespace crypto_com
         auth_handler m_authenticate_handler;
 
         message_handler m_heartbeat_handler;
+
+        uint64_t m_id = 0;
+
+        std::condition_variable m_data_condition;
+        std::mutex m_lock;
+
+        std::map<uint64_t, nlohmann::json> message_map;
+
     public:
         WSClient(EndpointType endpoint_type, bool is_sandbox)
             : m_endpoint_type(endpoint_type), m_is_sandbox(is_sandbox)
@@ -122,7 +130,16 @@ namespace crypto_com
 
                 return;
             } else {
-                std::cout << pl << std::endl;
+                std::unique_lock<std::mutex> lock(this->m_lock);
+                // std::cout << pl << std::endl;
+
+                if (auto it = this->message_map.find(pl["id"]); it != this->message_map.end())
+                {
+                    it->second = pl;
+                }
+
+                lock.unlock();
+                this->m_data_condition.notify_all();
             }
         }
 
@@ -156,22 +173,38 @@ namespace crypto_com
             return m_authenticated;
         }
 
-        websocketpp::lib::error_code send(nlohmann::json j)
+        nlohmann::json send(nlohmann::json j)
         {
-            return this->send(j.dump());
+            j["id"] = ++this->m_id;
+            
+            this->message_map.emplace(j["id"], nullptr);
+
+            if (websocketpp::lib::error_code ec = this->send_no_wait(j); ec){
+                throw ec;
+            }
+
+            std::unique_lock<std::mutex> lock(this->m_lock);
+            this->m_data_condition.wait(lock);
+
+            if (auto it = this->message_map.find(j["id"]); it != this->message_map.end())
+            {
+                return it->second;
+            }
+            return nullptr;
         }
-        websocketpp::lib::error_code send(std::string message)
+
+        websocketpp::lib::error_code send_no_wait(nlohmann::json j)
         {
             websocketpp::lib::error_code ec;
-            
-            client::send(this->m_conn->get_handle(), message.c_str(), websocketpp::frame::opcode::text, ec);
+            std::string message = j.dump();
 
+            client::send(this->m_conn->get_handle(), message.c_str(), websocketpp::frame::opcode::text, ec);
             return ec;
         }
 
         void send_heartbeat(nlohmann::json& pl)
         {
-            this->send({
+            this->send_no_wait({
                 { "method", "public/respond-heartbeat" },
                 { "id", pl["id"] }
             });
@@ -181,6 +214,5 @@ namespace crypto_com
         {
             m_authenticate_handler = f;
         }
-
     };
 }
