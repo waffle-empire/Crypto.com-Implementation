@@ -22,3 +22,6 @@ Makefile
 
 # settings file with authentication details
 *.json
+
+# heaptrack
+*.zst
