@@ -37,17 +37,20 @@ int main()
         std::this_thread::sleep_for(25ms);
     }
 
-    bool testing = false;
+    bool testing = true;
+    nlohmann::json result;
     if (testing == true)
     {
-        client_instance->user->cancel_all_orders("CROUSDC");
-        client_instance->user->cancel_order("CRO_USDC", "2248896696844988229");
-        client_instance->user->create_order("CRO_USDC", "SELL", "LIMIT", 0.512, 51.121, 0, 0, "bot_test_02", "GOOD_TILL_CANCEL", "" );
-        client_instance->user->get_account_summary();
-        client_instance->user->get_open_orders();
-        client_instance->user->get_order_detail("2248896696844988229");
-        client_instance->user->get_order_history();
-        client_instance->user->get_trades("CROUSDC", 0, 0, 0, 0);
+        // std::cout << "send tests" << std::endl;
+        result = client_instance->user->cancel_all_orders("CROUSDC");
+        // result = client_instance->user->cancel_order("CRO_USDC", "2248896696844988229");
+        // result = client_instance->user->create_order("CRO_USDC", "SELL", "LIMIT", 0.512, 51.121, 0, 0, "bot_test_02", "GOOD_TILL_CANCEL", "" );
+        result = client_instance->user->get_account_summary();
+        result = client_instance->user->get_open_orders();
+        // result = client_instance->user->get_order_detail("2248896696844988229");
+        result = client_instance->user->get_order_history();
+        result = client_instance->user->get_trades("CROUSDC", 0, 0, 0, 0);
+        // std::cout << result << std::endl;
     }
 
     // trade logic
