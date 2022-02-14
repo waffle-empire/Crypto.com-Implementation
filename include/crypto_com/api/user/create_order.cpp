@@ -3,7 +3,7 @@
 
 namespace crypto_com
 {
-    void UserAPI::create_order(std::string instrument_name, std::string side, std::string type,
+    nlohmann::json UserAPI::create_order(std::string instrument_name, std::string side, std::string type,
                 double price, double quantity, double notional,
                 double trigger_price, std::string client_oid,
                 std::string time_in_force, std::string exec_inst)
@@ -38,6 +38,6 @@ namespace crypto_com
 
         util::sign_payload(pl, this->m_key, this->m_secret);
 
-        m_ws_client->send(pl);
+        return m_ws_client->send(pl);
     }
 } // namespace crypto_com

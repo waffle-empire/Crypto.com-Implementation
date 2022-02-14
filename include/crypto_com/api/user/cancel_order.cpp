@@ -3,7 +3,7 @@
 
 namespace crypto_com
 {
-    void UserAPI::cancel_order(std::string instrument_name, std::string order_id)
+    nlohmann::json UserAPI::cancel_order(std::string instrument_name, std::string order_id)
     {
         nlohmann::json pl = nlohmann::json{
             { "method", "private/cancel-order" },
@@ -17,6 +17,6 @@ namespace crypto_com
 
         util::sign_payload(pl, this->m_key, this->m_secret);
 
-        m_ws_client->send(pl);
+        return m_ws_client->send(pl);
     }
 } // namespace crypto_com

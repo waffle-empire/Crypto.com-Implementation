@@ -13,6 +13,6 @@ namespace crypto_com
 
         util::sign_payload(pl, this->m_key, this->m_secret);
 
-        m_ws_client->send(pl);
+        m_ws_client->send_no_wait(pl);
     }
 } // namespace crypto_com
