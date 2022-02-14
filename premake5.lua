@@ -74,6 +74,7 @@ workspace "CryptoComImpl"
             flags {  }
             defines { "DEBUG", "_DEBUG" }
             symbols "On"
+            optimize "debug"
 
         filter "configurations:Release"
             flags { "NoManifest" }

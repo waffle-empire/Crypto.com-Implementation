@@ -19,6 +19,11 @@ namespace crypto_com
         this->m_ws_client->connect();
     }
 
+    bool UserAPI::is_authenticated()
+    {
+        return this->m_ws_client->is_authenticated();
+    }
+
     void UserAPI::disconnect()
     {
         this->m_ws_client->kill();
