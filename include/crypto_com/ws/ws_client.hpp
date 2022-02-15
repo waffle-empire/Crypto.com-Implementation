@@ -38,7 +38,8 @@ namespace crypto_com
         std::condition_variable m_data_condition;
         std::mutex m_lock;
 
-        std::map<uint64_t, nlohmann::json> message_map;
+        std::map<uint64_t, nlohmann::json> m_message_map;
+        std::map<std::string, std::function<void(nlohmann::json pl)>> m_subscription_map;
 
     public:
         WSClient(EndpointType endpoint_type, bool is_sandbox)
@@ -50,11 +51,17 @@ namespace crypto_com
             this->set_tls_init_handler(bind(&WSClient::on_tls_init, this));
 
             m_heartbeat_handler = bind(
-                endpoint_type == EndpointType::USER ? &WSClient::pre_authenticate_message : &WSClient::post_authenticate_messsage,
+                endpoint_type == EndpointType::USER ? &WSClient::pre_authenticate_message : &WSClient::post_authenticate_message,
                 this,
                 _1,
                 _2
             );
+            // m_heartbeat_handler = bind(
+            //     endpoint_type == EndpointType::USER ? &WSClient::pre_authenticate_message : &WSClient::pre_authenticate_message,
+            //     this,
+            //     _1,
+            //     _2
+            // );
             this->set_message_handler(bind(&WSClient::message_handler, this, _1, _2));
         }
 
@@ -71,6 +78,7 @@ namespace crypto_com
                 return false;
 
             client::connect(this->m_conn);
+            std::cout << "connect" << std::endl;
             // blocking call
             this->run();
 
@@ -92,6 +100,8 @@ namespace crypto_com
         void pre_authenticate_message(websocketpp::connection_hdl con_hdl, message_ptr message)
         {
             nlohmann::json pl = nlohmann::json::parse(message->get_payload());
+            std::cout << "PRE" << std::endl;
+            std::cout << pl << std::endl;
 
             if (pl["method"] == "public/auth")
             {
@@ -99,7 +109,7 @@ namespace crypto_com
                 {
                     this->m_authenticated = true;
 
-                    m_heartbeat_handler = bind(&WSClient::post_authenticate_messsage, this, _1, _2);
+                    m_heartbeat_handler = bind(&WSClient::post_authenticate_message, this, _1, _2);
 
                     return;
                 }
@@ -120,20 +130,27 @@ namespace crypto_com
             }
         }
 
-        void post_authenticate_messsage(websocketpp::connection_hdl con_hdl, message_ptr message)
+        void post_authenticate_message(websocketpp::connection_hdl con_hdl, message_ptr message)
         {
             nlohmann::json pl = nlohmann::json::parse(message->get_payload());
+            std::cout << "POST" << std::endl;
+            std::cout << pl << std::endl;
 
             if (pl["method"] == "public/heartbeat")
             {
                 this->send_heartbeat(pl);
 
                 return;
+            } else if (pl["method"] == "subscribe" ) {
+                if (auto it = this->m_subscription_map.find(pl["result"]["subscription"]); it != this->m_subscription_map.end())
+                {
+                    std::function<void(nlohmann::json pl)> function = it->second;
+                    function(pl["result"]);
+                }
             } else {
                 std::unique_lock<std::mutex> lock(this->m_lock);
-                // std::cout << pl << std::endl;
 
-                if (auto it = this->message_map.find(pl["id"]); it != this->message_map.end())
+                if (auto it = this->m_message_map.find(pl["id"]); it != this->m_message_map.end())
                 {
                     it->second = pl;
                 }
@@ -177,7 +194,7 @@ namespace crypto_com
         {
             j["id"] = ++this->m_id;
             
-            this->message_map.emplace(j["id"], nullptr);
+            this->m_message_map.emplace(j["id"], nullptr);
 
             if (websocketpp::lib::error_code ec = this->send_no_wait(j); ec){
                 throw ec;
@@ -186,7 +203,7 @@ namespace crypto_com
             std::unique_lock<std::mutex> lock(this->m_lock);
             this->m_data_condition.wait(lock);
 
-            if (auto it = this->message_map.find(j["id"]); it != this->message_map.end())
+            if (auto it = this->m_message_map.find(j["id"]); it != this->m_message_map.end())
             {
                 return it->second;
             }
@@ -200,6 +217,26 @@ namespace crypto_com
 
             client::send(this->m_conn->get_handle(), message.c_str(), websocketpp::frame::opcode::text, ec);
             return ec;
+        }
+
+        void add_subscription(std::string timeframe, std::string coin_pair, std::function<void(nlohmann::json pl)> function)
+        {
+            std::string channel = "candlestick."+timeframe+"."+coin_pair;
+            
+            nlohmann::json pl = nlohmann::json{
+                { "method", "subscribe" },
+                { "nonce", util::create_nonce() },
+                { "params", { 
+                        { "channels", nlohmann::json::array({ channel }) }
+                    }
+                }
+            };
+
+            std::cout << pl << std::endl;
+
+            this->m_subscription_map.emplace(pl["params"]["channels"][0], function);
+
+            this->send_no_wait(pl);
         }
 
         void send_heartbeat(nlohmann::json& pl)

@@ -4,7 +4,7 @@ namespace crypto_com
 {
     Client::Client(std::string key, std::string secret, bool is_sandbox)
     {
-        this->market    = new MarketAPI();
+        this->market    = new MarketAPI(is_sandbox);
         this->user      = new UserAPI(key, secret, is_sandbox);
     }
 
@@ -19,8 +19,14 @@ namespace crypto_com
         this->user->connect();
     }
 
+    void Client::connect_market_socket()
+    {
+        this->market->connect();
+    }
+
     void Client::kill()
     {
         this->user->disconnect();
+        this->market->disconnect();
     }
 }

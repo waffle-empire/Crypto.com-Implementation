@@ -1,14 +1,24 @@
 #pragma once
-#include "../common.hpp" 
+#include "../common.hpp"
+#include "../ws/ws_client.hpp"
 
 namespace crypto_com
 {
     class MarketAPI
     {
     private:
-        /* data */
+        bool m_is_sandbox;
+
+        WSClient* m_ws_client;
     public:
-        MarketAPI(/* args */);
+        MarketAPI(bool is_sandbox);
         ~MarketAPI();
+
+        void subscribe_candlestick(std::string timeframe, std::string coin_pair, std::function<void(nlohmann::json pl)> function);
+
+        void connect();
+        void disconnect();
+        bool is_authenticated();
+
     };
 } // namespace crypto_com

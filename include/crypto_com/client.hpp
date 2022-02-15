@@ -19,6 +19,7 @@ namespace crypto_com
         virtual ~Client();
 
         void connect_user_socket();
+        void connect_market_socket();
         void kill();
     };
 } // namespace crypto_com

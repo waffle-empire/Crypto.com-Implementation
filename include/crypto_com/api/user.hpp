@@ -16,8 +16,6 @@ namespace crypto_com
         UserAPI(std::string key, std::string secret, bool is_sandbox);
         virtual ~UserAPI();
 
-        bool is_authenticated();
-
         /* COMMON API REFERENCE - https://exchange-docs.crypto.com/spot/index.html#common-api-reference */
         /* PUBLIC */ 
         void authenticate_handler();
@@ -64,5 +62,6 @@ namespace crypto_com
 
         void connect();
         void disconnect();
+        bool is_authenticated();
     };
 }
