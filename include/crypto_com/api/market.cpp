@@ -33,4 +33,11 @@ namespace crypto_com
         std::string channel = "candlestick."+timeframe+"."+coin_pair;
         return this->m_ws_client->add_subscription(channel, function);
     }
+
+    nlohmann::json MarketAPI::subscribe(std::string channel, std::function<void(nlohmann::json pl)> function)
+    {
+        return this->m_ws_client->add_subscription(channel, function);
+    }
+
+
 }

@@ -59,7 +59,9 @@ int main()
         // result = client_instance->user->get_trades("CROUSDC", 0, 0, 0, 0);
         while (!result.contains("code")){
             std::this_thread::sleep_for(100ms);
-            result = client_instance->market->subscribe_candlestick("1m", "CRO_USDC", subscription_handler);
+            // result = client_instance->market->subscribe_candlestick("1m", "CRO_USDC", subscription_handler);
+            // OR
+            result = client_instance->market->subscribe("candlestick.1m.CRO_USDC", subscription_handler);
         }
         // std::cout << result << std::endl;
     }

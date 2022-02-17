@@ -142,7 +142,7 @@ namespace crypto_com
                 this->send_heartbeat(pl);
 
                 return;
-            } else if (pl["method"] == "subscribe" && pl.contains("result")) {
+            } else if (pl["method"] == "subscribe" && pl.contains("result") && pl["result"].contains("subscription")) {
                 if (auto it = this->m_subscription_map.find(pl["result"]["subscription"]); it != this->m_subscription_map.end())
                 {
                     std::function<void(nlohmann::json pl)> function = it->second;
