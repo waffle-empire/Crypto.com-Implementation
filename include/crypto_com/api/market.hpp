@@ -14,7 +14,7 @@ namespace crypto_com
         MarketAPI(bool is_sandbox);
         ~MarketAPI();
 
-        void subscribe_candlestick(std::string timeframe, std::string coin_pair, std::function<void(nlohmann::json pl)> function);
+        nlohmann::json subscribe_candlestick(std::string timeframe, std::string coin_pair, std::function<void(nlohmann::json pl)> function);
 
         void connect();
         void disconnect();

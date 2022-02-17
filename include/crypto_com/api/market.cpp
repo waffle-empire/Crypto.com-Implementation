@@ -28,8 +28,9 @@ namespace crypto_com
         return this->m_ws_client->is_authenticated();
     }
 
-    void MarketAPI::subscribe_candlestick(std::string timeframe, std::string coin_pair, std::function<void(nlohmann::json pl)> function)
+    nlohmann::json MarketAPI::subscribe_candlestick(std::string timeframe, std::string coin_pair, std::function<void(nlohmann::json pl)> function)
     {
-        this->m_ws_client->add_subscription(timeframe, coin_pair, function);
+        std::string channel = "candlestick."+timeframe+"."+coin_pair;
+        return this->m_ws_client->add_subscription(channel, function);
     }
 }
