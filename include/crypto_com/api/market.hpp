@@ -15,7 +15,7 @@ namespace crypto_com
         ~MarketAPI();
 
         nlohmann::json subscribe_candlestick(std::string timeframe, std::string coin_pair, std::function<void(nlohmann::json pl)> function);
-        nlohmann::json MarketAPI::subscribe(std::string channel, std::function<void(nlohmann::json pl)> function);
+        nlohmann::json subscribe(std::string channel, std::function<void(nlohmann::json pl)> function);
 
         void connect();
         void disconnect();
