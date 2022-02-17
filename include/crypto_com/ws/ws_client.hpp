@@ -56,12 +56,6 @@ namespace crypto_com
                 _1,
                 _2
             );
-            // m_heartbeat_handler = bind(
-            //     endpoint_type == EndpointType::USER ? &WSClient::pre_authenticate_message : &WSClient::pre_authenticate_message,
-            //     this,
-            //     _1,
-            //     _2
-            // );
             this->set_message_handler(bind(&WSClient::message_handler, this, _1, _2));
         }
 
@@ -100,7 +94,8 @@ namespace crypto_com
         void pre_authenticate_message(websocketpp::connection_hdl con_hdl, message_ptr message)
         {
             nlohmann::json pl = nlohmann::json::parse(message->get_payload());
-            std::cout << "PRE" << std::endl;
+            std::string endpoint = m_endpoint_type == EndpointType::USER ? "user" : "market";
+            std::cout << endpoint << std::endl;
             std::cout << pl << std::endl;
 
             if (pl["method"] == "public/auth")
@@ -132,8 +127,14 @@ namespace crypto_com
 
         void post_authenticate_message(websocketpp::connection_hdl con_hdl, message_ptr message)
         {
-            nlohmann::json pl = nlohmann::json::parse(message->get_payload());
-            std::cout << "POST" << std::endl;
+            nlohmann::json pl;
+            try {
+                pl = nlohmann::json::parse(message->get_payload());
+            } catch (std::exception &e) {
+                std::cout << "Error in payload: " << e.what() << std::endl;
+            }
+            std::string endpoint = m_endpoint_type == EndpointType::USER ? "user" : "market";
+            std::cout << endpoint << std::endl;
             std::cout << pl << std::endl;
 
             if (pl["method"] == "public/heartbeat")
@@ -141,13 +142,13 @@ namespace crypto_com
                 this->send_heartbeat(pl);
 
                 return;
-            } else if (pl["method"] == "subscribe" ) {
+            } else if (pl["method"] == "subscribe" && pl.contains("result")) {
                 if (auto it = this->m_subscription_map.find(pl["result"]["subscription"]); it != this->m_subscription_map.end())
                 {
                     std::function<void(nlohmann::json pl)> function = it->second;
                     function(pl["result"]);
                 }
-            } else {
+            } else if (pl.contains("id")) {
                 std::unique_lock<std::mutex> lock(this->m_lock);
 
                 if (auto it = this->m_message_map.find(pl["id"]); it != this->m_message_map.end())
@@ -219,10 +220,8 @@ namespace crypto_com
             return ec;
         }
 
-        void add_subscription(std::string timeframe, std::string coin_pair, std::function<void(nlohmann::json pl)> function)
-        {
-            std::string channel = "candlestick."+timeframe+"."+coin_pair;
-            
+        nlohmann::json add_subscription(std::string channel, std::function<void(nlohmann::json pl)> function)
+        {            
             nlohmann::json pl = nlohmann::json{
                 { "method", "subscribe" },
                 { "nonce", util::create_nonce() },
@@ -232,11 +231,11 @@ namespace crypto_com
                 }
             };
 
-            std::cout << pl << std::endl;
+            std::cout << pl["params"]["channels"][0] << std::endl;
 
             this->m_subscription_map.emplace(pl["params"]["channels"][0], function);
 
-            this->send_no_wait(pl);
+            return this->send(pl);
         }
 
         void send_heartbeat(nlohmann::json& pl)
