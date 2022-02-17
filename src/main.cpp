@@ -29,20 +29,19 @@ int main()
 
     // client
     std::unique_ptr<crypto_com::Client> client_instance = std::make_unique<crypto_com::Client>(g_settings->api.key, g_settings->api.secret);
-    // g_thread_pool->push([&client_instance]
-    // {
-    //     client_instance->connect_user_socket();
-    // });
-
     g_thread_pool->push([&client_instance]
     {
         client_instance->connect_market_socket();
     });
+    
+    g_thread_pool->push([&client_instance]
+    {
+        client_instance->connect_user_socket();
+    });
 
-     
     while (client_instance->user->is_authenticated() != true)
     {
-        std::this_thread::sleep_for(25ms);
+        std::this_thread::sleep_for(50ms);
     }
 
     bool testing = true;
@@ -58,8 +57,11 @@ int main()
         // result = client_instance->user->get_order_detail("2248896696844988229");
         // result = client_instance->user->get_order_history();
         // result = client_instance->user->get_trades("CROUSDC", 0, 0, 0, 0);
+        while (!result.contains("code")){
+            std::this_thread::sleep_for(100ms);
+            result = client_instance->market->subscribe_candlestick("1m", "CRO_USDC", subscription_handler);
+        }
         // std::cout << result << std::endl;
-        // client_instance->market->subscribe_candlestick("1m", "CRO_USDC", subscription_handler);
     }
 
     // trade logic
@@ -89,6 +91,7 @@ int main()
 
 void subscription_handler(nlohmann::json pl)
 {
+    std::cout << "subscription received" << std::endl;
     std::cout << pl << std::endl;
 }
 
