@@ -19,24 +19,26 @@ namespace crypto_com
         /* COMMON API REFERENCE - https://exchange-docs.crypto.com/spot/index.html#common-api-reference */
         /* PUBLIC */ 
         void authenticate_handler();
-        // void get_instruments();
-        // void get_book(std::string instrument_name, std::string depth = "");
-        // void get_candlestick(std::string instrument_name = "", std::string timeframe = "");
-        // void get_ticker(std::string instrument_name = ""); 
-        // void get_trades(std::string instrument_name = "");  // conflicting name with private/get-trades
+        nlohmann::json get_instruments();
+        /* public endpoint below only use REST api */
+        // nlohmann::json get_book(std::string instrument_name, std::string depth = "");
+        // nlohmann::json get_candlestick(std::string instrument_name = "", std::string timeframe = "");
+        // nlohmann::json get_ticker(std::string instrument_name = ""); 
+        // nlohmann::json get_public_trades(std::string instrument_name = "");  // conflicting name with private/get-trades
 
         /* PRIVATE */
-        // void set_cancel_on_disconnect(std::string scope);
-        // void get_cancel_on_disconnect();
-        // void create_withdrawal(std::string currency, double amount, std::string address, 
-                // std::string client_wid = "", std::string address_tag = "", std::string network_id = "");
-        // void get_currency_networks(); // still need to pass empty params object in json
-        // void get_withdrawal_history(std::string currency = "", double start_ts = 0, double end_ts = 0, int page_size = 0, int page = 0, std::string status = "");
-        // void get_deposit_history(std::string currency = "", double start_ts = 0, double end_ts = 0, int page_size = 0, int page = 0, std::string status = "");
-        // void get_deposit_address(std::string currency);
+        nlohmann::json set_cancel_on_disconnect(std::string scope);
+        nlohmann::json get_cancel_on_disconnect();
+        nlohmann::json create_withdrawal(std::string currency, double amount, std::string address, 
+                std::string client_wid = "", std::string address_tag = "", std::string network_id = "");
+        nlohmann::json get_currency_networks(); // still need to pass empty params object in json
+        nlohmann::json get_withdrawal_history(std::string currency = "", double start_ts = 0, double end_ts = 0, int page_size = 0, int page = 0, std::string status = "");
+        nlohmann::json get_deposit_history(std::string currency = "", double start_ts = 0, double end_ts = 0, int page_size = 0, int page = 0, std::string status = "");
+        nlohmann::json get_deposit_address(std::string currency);
         
 
         // SPOT TRADING API - https://exchange-docs.crypto.com/spot/index.html#spot-trading-api
+        /* PRIVATE */
         nlohmann::json cancel_all_orders(std::string instrument_name);
         nlohmann::json cancel_order(std::string instrument_name, std::string order_id);
         nlohmann::json create_order(std::string instrument_name, std::string side, std::string type,
