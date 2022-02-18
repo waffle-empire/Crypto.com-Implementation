@@ -1,13 +1,13 @@
-#include "../user.hpp"
-#include "../../util.hpp"
+#include "../../user.hpp"
+#include "../../../util.hpp"
 
 namespace crypto_com
 {
-    nlohmann::json UserAPI::get_order_history(std::string instrument_name, long start_ts, long end_ts,
+    nlohmann::json UserAPI::get_trades(std::string instrument_name, long start_ts, long end_ts,
                 int page_size, int page)
     {
         nlohmann::json pl = nlohmann::json{
-            { "method", "private/get-order-history" },
+            { "method", "private/get-trades" },
             { "nonce", util::create_nonce() }
         };
 

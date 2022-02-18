@@ -1,5 +1,5 @@
-#include "../user.hpp"
-#include "../../util.hpp"
+#include "../../user.hpp"
+#include "../../../util.hpp"
 
 namespace crypto_com
 {
@@ -12,9 +12,7 @@ namespace crypto_com
 
         pl["params"] = nlohmann::json::object();
 
-        if (currency.empty())
-            pl["params"] = nlohmann::json::object();
-        else
+        if (!currency.empty())
             pl["params"] = nlohmann::json{ { "currency", currency } };
 
         util::sign_payload(pl, this->m_key, this->m_secret);
