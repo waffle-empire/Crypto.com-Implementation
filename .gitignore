@@ -21,7 +21,8 @@ CMakeLists.txt
 Makefile
 
 # settings file with authentication details
-*.json
+# *.json
+settings.json
 
 # heaptrack
 *.zst
