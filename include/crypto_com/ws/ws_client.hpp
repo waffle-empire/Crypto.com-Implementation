@@ -72,7 +72,6 @@ namespace crypto_com
                 return false;
 
             client::connect(this->m_conn);
-            std::cout << "connect" << std::endl;
             // blocking call
             this->run();
 
@@ -95,8 +94,8 @@ namespace crypto_com
         {
             nlohmann::json pl = nlohmann::json::parse(message->get_payload());
             std::string endpoint = m_endpoint_type == EndpointType::USER ? "user" : "market";
-            std::cout << endpoint << std::endl;
-            std::cout << pl << std::endl;
+            // std::cout << endpoint << std::endl;
+            // std::cout << pl << std::endl;
 
             if (pl["method"] == "public/auth")
             {
@@ -120,9 +119,8 @@ namespace crypto_com
                     m_authenticate_handler();
 
                 return;
-            } else {
-                std::cout << pl << std::endl;
             }
+            return;
         }
 
         void post_authenticate_message(websocketpp::connection_hdl con_hdl, message_ptr message)
@@ -134,8 +132,8 @@ namespace crypto_com
                 std::cout << "Error in payload: " << e.what() << std::endl;
             }
             std::string endpoint = m_endpoint_type == EndpointType::USER ? "user" : "market";
-            std::cout << endpoint << std::endl;
-            std::cout << pl << std::endl;
+            // std::cout << endpoint << std::endl;
+            // std::cout << pl << std::endl;
 
             if (pl["method"] == "public/heartbeat")
             {
@@ -230,8 +228,6 @@ namespace crypto_com
                     }
                 }
             };
-
-            std::cout << pl["params"]["channels"][0] << std::endl;
 
             this->m_subscription_map.emplace(pl["params"]["channels"][0], function);
 
